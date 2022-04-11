@@ -23,7 +23,8 @@ class Profile(models.Model):
     biography = models.TextField(
         null=True,
         blank=True,
-        default='No biography yet'
+        default='No biography yet',
+        max_length=150,
     )
 
     gender = models.CharField(

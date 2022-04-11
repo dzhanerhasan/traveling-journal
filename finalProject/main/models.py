@@ -34,6 +34,9 @@ class Album(models.Model):
 
 
 class Picture(models.Model):
+
+    DESCRIPTION_MAX_LENGTH = 100
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -47,6 +50,7 @@ class Picture(models.Model):
     description = models.TextField(
         null=True,
         blank=True,
+        max_length=DESCRIPTION_MAX_LENGTH
     )
 
     photo = models.ImageField(
