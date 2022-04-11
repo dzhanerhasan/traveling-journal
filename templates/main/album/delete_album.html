@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block page_content %}
+    <h2 class="mt-3 text-center">Delete Album</h2>
+
+    <form method="POST" class="mt-3">
+        {% csrf_token %}
+        <h6 class="text-center">If you delete this album, all your pictures in it will be lost too, do you still want to proceed?</h6>
+       <div class="d-flex justify-content-center">
+            <button class="btn btn-danger rounded mr-2" type="submit" value="delete" style="width: 100px;">Yes, delete!</button>
+            <a href="{% url 'detail album' album.pk %}" class="btn btn-secondary rounded" type="submit" style="width: 100px;">Cancel</a>
+       </div>
+    </form>
+{% endblock %}

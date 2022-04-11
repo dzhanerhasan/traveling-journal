@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_content %}
+
+
+    <div class="d-flex flex-column justify-content-between" style="min-height: 100vh">
+        <div>
+            <h1 class="text-center mt-2" style="color: #f29263">My Journal</h1>
+        <hr>
+
+                {% if not albums %}
+                    <p class="text-center" style="font-size: 20px">Your albums will show up here when you
+                        <a href="{% url 'create album' %}">create</a> them.
+                        Go on and share your favorite destinations and pictures!</p>
+
+                {% else %}
+                    <div class="site-wrap">
+                        <div data-aos="fade" data-aos-delay="500">
+                            <div class="row">
+
+                {% for album in posts %}
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                  <div class="image-wrap-2">
+                                    <div class="image-info">
+                                      <h2 class="mb-3">{{ album.title }}</h2>
+                                      <a href="{% url 'detail album' album.pk %}"
+                                         class="btn btn-outline-white py-2 px-4">More Photos</a>
+                                    </div>
+                                    <img src="{{ album.thumbnail.url }}" alt="Image" class="img-fluid rounded img-size" style="height: 230px; width: 380px;">
+                                  </div>
+                                </div>
+                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+        </div>
+        <div>
+            <div>
+                <ul class="pagination d-flex justify-content-center">
+                    {% if posts.has_previous %}
+                        <li class="page-item d-flex">
+                            <a href="?page={{ 1 }}" class="page-link">First</a>
+                            <a href="?page={{ posts.previous_page_number }}" class="page-link">&laquo;</a>
+                        </li>
+                    {% endif %}
+                    {% for p in posts.paginator.page_range %}
+                        {% if posts.number == p %}
+                            <li class="page-item active">
+                                <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if posts.has_next %}
+                        <li class="page-item d-flex">
+                            <a href="?page={{ posts.next_page_number }}" class="page-link">&raquo;</a>
+                            <a href="?page={{ posts.paginator.num_pages }}" class="page-link">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
