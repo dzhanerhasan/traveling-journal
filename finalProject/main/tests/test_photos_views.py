@@ -1,15 +1,8 @@
-from io import StringIO
-
-from PIL import Image
-from django.core.files.base import File
-
 from django.contrib.auth.models import User
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 
 from finalProject.main.models import Picture, Album
-from finalProject.main.views.photos import PhotoEditView
 
 
 class TestViews(TestCase):

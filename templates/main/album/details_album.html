@@ -77,7 +77,7 @@
             <hr>
 
             {% if not photos %}
-                <h5 class="text-center">No photos on this album yet!</h5>
+                <h5 class="text-center">The photos you <a href="{% url 'create photo' %}">add</a> to this album will show up here.</h5>
             {% else %}
             <div class="tz-gallery">
                 <div class="row">
