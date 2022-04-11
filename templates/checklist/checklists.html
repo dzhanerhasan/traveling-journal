@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block page_content %}
+
+    <h1 class="text-center mt-2" style="color: #f29263">My Plans</h1>
+        <div class="d-flex justify-content-center">
+            <div class="mb-2">
+                <a href="{% url 'create list' %}" class="btn btn-info rounded text-center" style="width: 120px;">Add</a>
+            </div>
+        </div>
+    <hr>
+
+    <ul class="list-group padding">
+    {% for list in checklists %}
+      <li class="list-group-item">
+          <div class="d-flex justify-content-between">
+              <span>
+                  {{ list.title }}
+              </span>
+              <div>
+                  <a href="{% url 'details list' list.pk %}" class="btn-sm btn-info rounded" >View</a>
+                  <a href="{% url 'edit list' list.pk %}" class="btn-sm btn-primary rounded" >Edit</a>
+                  <a href="{% url 'delete list' list.pk %}" class="btn-sm btn-danger rounded" >Delete</a>
+              </div>
+          </div>
+      </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

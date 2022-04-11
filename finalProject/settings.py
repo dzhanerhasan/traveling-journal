@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     'finalProject.main',
     'finalProject.accounts',
+    'finalProject.checklist',
 
     'crispy_forms',
 
