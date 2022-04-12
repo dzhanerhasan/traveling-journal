@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
@@ -32,12 +32,35 @@ def checklist_page(request):
 
 @login_required
 def checklist_details(request, pk):
-    checklist_name = CheckList.objects.get(pk=pk)
+    checklist = CheckList.objects.get(pk=pk)
     plans = ListItems.objects.filter(checklist__pk=pk)
     current_user = None
 
+    if plans:
+        current_user = plans[0].checklist.author
+
+        if request.user != current_user:
+            return redirect('home page')
+
+    if request.method == "POST":
+
+        content = request.POST
+
+        ListItems.objects.create(
+            user=request.user,
+            checklist=checklist,
+            content=content['content'],
+        )
+
+        return redirect('details list', checklist.pk)
+
+    if request.GET.get('DeleteButton'):
+        ListItems.objects.filter(id=request.GET.get('DeleteButton')).delete()
+
+        return redirect('details list', checklist.pk)
+
     context = {
-        'checklist_name': checklist_name.title,
+        'checklist_name': checklist.title,
         'checklist_pk': pk,
         'plans': plans,
     }

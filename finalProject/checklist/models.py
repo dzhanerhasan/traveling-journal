@@ -39,7 +39,9 @@ class ListItems(models.Model):
         max_length=200,
     )
 
-    completed = models.BooleanField()
+    completed = models.BooleanField(
+        default=False,
+    )
 
     def __str__(self):
         return self.content
