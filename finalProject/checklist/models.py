@@ -22,6 +22,9 @@ class CheckList(models.Model):
     def get_absolute_url(self):
         return reverse('checklist')
 
+    class Meta:
+        ordering = ['-id']
+
 
 class ListItems(models.Model):
 
@@ -45,3 +48,6 @@ class ListItems(models.Model):
 
     def __str__(self):
         return self.content
+
+    class Meta:
+        ordering = ['-id']

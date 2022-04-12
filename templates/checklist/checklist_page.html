@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block page_content %}
 
+    <h1 class="text-center mt-2" style="color: #f29263">{{ checklist_name }}</h1>
+    <hr>
+    <h5 class="text-center"></h5>
+    <div class="d-flex flex-column justify-content-between" style="min-height: 100vh">
 
      <div class="row d-flex justify-content-center align-items-center h-100 padding">
           <div class="col col-xl-10">
@@ -10,7 +14,7 @@
 
                 <form method="POST" class="d-flex flex-column justify-content-center align-items-center mb-4">
                     {% csrf_token %}
-                    <label class="form-label" for="form2">New task...</label>
+                    <label class="form-label" for="form2">New plan...</label>
 
                     <div class="form-outline d-flex">
                         <input name="content" id="form2" class="form-control" required/>
@@ -21,15 +25,19 @@
                 <!-- Tabs navs -->
                 <ul class="nav nav-tabs mb-4 pb-2" id="ex1" role="tablist">
                   <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab"
+                    <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab"
+                       href="{% url 'details list' checklist_pk %}" role="tab"
                       aria-controls="ex1-tabs-1" aria-selected="true">All</a>
+
                   </li>
                   <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2" role="tab"
+                    <a class="nav-link active" id="ex1-tab-2" data-mdb-toggle="tab"
+                       href="{% url 'details list' checklist_pk %}?status=Active" role="tab"
                       aria-controls="ex1-tabs-2" aria-selected="false">Active</a>
                   </li>
                   <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3" role="tab"
+                    <a class="nav-link active" id="ex1-tab-3" data-mdb-toggle="tab"
+                       href="{% url 'details list' checklist_pk %}?status=Completed" role="tab"
                       aria-controls="ex1-tabs-3" aria-selected="false">Completed</a>
                   </li>
                 </ul>
@@ -39,28 +47,72 @@
                 <div class="tab-content" id="ex1-content">
                   <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1">
                     <ul class="list-group mb-0">
-                        {% for plan in plans %}
-                            <li class="list-group-item d-flex align-items-center justify-content-between border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                                <div class="ml-2">
-                                    <input class="form-check-input" type="checkbox" value="" aria-label="..."/>
+
+                        {% for plan in posts %}
+                            {% if plan.completed %}
+
+                                <li class="list-group-item d-flex align-items-center justify-content-between border-0 mb-2 rounded" style="background-color: #f4f6f7;">
+                                    <s class="">{{ plan.content }}</s>
+
+                                    <div>
+                                        <a href="{% url 'active plan' plan.pk %}" class="btn-sm btn-info rounded">Activate</a>
+                                        <a href="{% url 'delete plan' plan.pk %}" class="btn-sm btn-danger rounded">Delete</a>
+                                    </div>
+
+                                </li>
+                            {% else %}
+
+                                <li class="list-group-item d-flex align-items-center justify-content-between border-0 mb-2 rounded" style="background-color: #f4f6f7;">
+
                                     <span class="">{{ plan.content }}</span>
-                                </div>
-                                <form action="" method="GET">
-                                    <button class="btn-sm btn-danger rounded" name="DeleteButton" value="{{ plan.pk }}">Delete</button>
-                                </form>
 
+                                    <div class="ml-1">
+                                         <a href="{% url 'complete plan' plan.pk %}" class="btn-sm btn-info rounded">Complete</a>
+                                        <a href="{% url 'delete plan' plan.pk %}" class="btn-sm btn-danger rounded">Delete</a>
+                                    </div>
 
-                            </li>
+                                </li>
+                            {% endif %}
                         {% endfor %}
                     </ul>
                   </div>
                 </div>
                 <!-- Tabs content -->
-
               </div>
             </div>
-
           </div>
+
         </div>
+        <div>
+            <div>
+                <ul class="pagination d-flex justify-content-center">
+                    {% if posts.has_previous %}
+                        <li class="page-item d-flex">
+                            <a href="?page={{ 1 }}" class="page-link">First</a>
+                            <a href="?page={{ posts.previous_page_number }}" class="page-link">&laquo;</a>
+                        </li>
+                    {% endif %}
+                    {% for p in posts.paginator.page_range %}
+                        {% if posts.number == p %}
+                            <li class="page-item active">
+                                <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if posts.has_next %}
+                        <li class="page-item d-flex">
+                            <a href="?page={{ posts.next_page_number }}" class="page-link">&raquo;</a>
+                            <a href="?page={{ posts.paginator.num_pages }}" class="page-link">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

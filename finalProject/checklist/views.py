@@ -1,9 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+
+from django.views.generic import CreateView, UpdateView, DeleteView
 
 from finalProject.checklist.models import CheckList, ListItems
 
@@ -32,6 +35,8 @@ def checklist_page(request):
 
 @login_required
 def checklist_details(request, pk):
+
+    # Filter items by user and checklist
     checklist = CheckList.objects.get(pk=pk)
     plans = ListItems.objects.filter(checklist__pk=pk)
     current_user = None
@@ -42,8 +47,8 @@ def checklist_details(request, pk):
         if request.user != current_user:
             return redirect('home page')
 
+    # Add new item to the list
     if request.method == "POST":
-
         content = request.POST
 
         ListItems.objects.create(
@@ -54,15 +59,30 @@ def checklist_details(request, pk):
 
         return redirect('details list', checklist.pk)
 
-    if request.GET.get('DeleteButton'):
-        ListItems.objects.filter(id=request.GET.get('DeleteButton')).delete()
+    # Filter active and completed plans
+    status = request.GET.get('status')
 
-        return redirect('details list', checklist.pk)
+    if status == 'Completed':
+        plans = plans.filter(completed=True)
+    elif status == 'Active':
+        plans = plans.filter(completed=False)
+
+    paginator = Paginator(plans, 9)
+    page = request.GET.get('page')
+
+    # paginate
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
 
     context = {
         'checklist_name': checklist.title,
         'checklist_pk': pk,
         'plans': plans,
+        'posts': posts,
     }
 
     return render(request, 'checklist/checklist_page.html', context)
@@ -104,3 +124,29 @@ class CheckListDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == album.author:
             return True
         return False
+
+
+@login_required
+def delete_plan(request, pk):
+    plan = ListItems.objects.get(pk=pk)
+    list_page = plan.checklist.pk
+    plan.delete()
+    return redirect('details list', list_page)
+
+
+@login_required
+def complete_plan(request, pk):
+    plan = ListItems.objects.get(pk=pk)
+    list_page = plan.checklist.pk
+    plan.completed = True
+    plan.save()
+    return redirect('details list', list_page)
+
+
+@login_required
+def active_plan(request, pk):
+    plan = ListItems.objects.get(pk=pk)
+    list_page = plan.checklist.pk
+    plan.completed = False
+    plan.save()
+    return redirect('details list', list_page)

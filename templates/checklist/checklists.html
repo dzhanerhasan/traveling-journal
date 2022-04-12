@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block page_content %}
 
-    <h1 class="text-center mt-2" style="color: #f29263">My Plans</h1>
+    <h1 class="text-center mt-2" style="color: #f29263">My List</h1>
         <div class="d-flex justify-content-center">
             <div class="mb-2">
                 <a href="{% url 'create list' %}" class="btn btn-info rounded text-center" style="width: 120px;">Add</a>
@@ -9,20 +9,63 @@
         </div>
     <hr>
 
-    <ul class="list-group padding">
-    {% for list in checklists %}
-      <li class="list-group-item">
-          <div class="d-flex justify-content-between">
-              <span>
-                  {{ list.title }}
-              </span>
-              <div>
-                  <a href="{% url 'details list' list.pk %}" class="btn-sm btn-info rounded" >View</a>
-                  <a href="{% url 'edit list' list.pk %}" class="btn-sm btn-primary rounded" >Edit</a>
-                  <a href="{% url 'delete list' list.pk %}" class="btn-sm btn-danger rounded" >Delete</a>
-              </div>
-          </div>
-      </li>
-    {% endfor %}
-    </ul>
+    <div class="d-flex flex-column justify-content-between" style="min-height: 100vh">
+        <div>
+            {% if not checklists %}
+                <h5 class="text-center">You don't have any plans yet. Your plans will show up here when you add them.</h5>
+                <p class="text center font-italic" style="font-size: 16px; text-align: center">Here you can create a list of the things you want to do during your trip.
+                For example create a list for Top 5 Restaurants near the location you are visiting and add them to your list.
+                You can then keep track of the ones you visited and cross them off your list and vice versa.</p>
+            {% else %}
+                <ul class="list-group padding">
+                {% for list in posts %}
+                  <li class="list-group-item">
+                      <div class="d-flex justify-content-between">
+                          <span>
+                              {{ list.title }}
+                          </span>
+                          <div>
+                              <a href="{% url 'details list' list.pk %}" class="btn-sm btn-info rounded" >View</a>
+                              <a href="{% url 'edit list' list.pk %}" class="btn-sm btn-primary rounded" >Edit</a>
+                              <a href="{% url 'delete list' list.pk %}" class="btn-sm btn-danger rounded" >Delete</a>
+                          </div>
+                      </div>
+                  </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        <div>
+            <div>
+                <ul class="pagination d-flex justify-content-center">
+                    {% if posts.has_previous %}
+                        <li class="page-item d-flex">
+                            <a href="?page={{ 1 }}" class="page-link">First</a>
+                            <a href="?page={{ posts.previous_page_number }}" class="page-link">&laquo;</a>
+                        </li>
+                    {% endif %}
+                    {% for p in posts.paginator.page_range %}
+                        {% if posts.number == p %}
+                            <li class="page-item active">
+                                <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if posts.has_next %}
+                        <li class="page-item d-flex">
+                            <a href="?page={{ posts.next_page_number }}" class="page-link">&raquo;</a>
+                            <a href="?page={{ posts.paginator.num_pages }}" class="page-link">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}
