@@ -28,6 +28,8 @@ class CheckList(models.Model):
 
 class ListItems(models.Model):
 
+    CONTENT_MAX_LENGTH = 200
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -39,7 +41,9 @@ class ListItems(models.Model):
     )
 
     content = models.CharField(
-        max_length=200,
+        max_length=CONTENT_MAX_LENGTH,
+        null=False,
+        blank=False,
     )
 
     completed = models.BooleanField(
