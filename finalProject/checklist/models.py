@@ -5,7 +5,7 @@ from django.urls import reverse
 
 class CheckList(models.Model):
 
-    TITLE_MAX_LENGTH = 20
+    TITLE_MAX_LENGTH = 150
 
     author = models.ForeignKey(
         User,
