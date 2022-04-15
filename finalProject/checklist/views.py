@@ -39,13 +39,9 @@ def checklist_details(request, pk):
     # Filter items by user and checklist
     checklist = CheckList.objects.get(pk=pk)
     plans = ListItems.objects.filter(checklist__pk=pk)
-    current_user = None
 
-    if plans:
-        current_user = plans[0].checklist.author
-
-        if request.user != current_user:
-            return redirect('home page')
+    if request.user != checklist.author:
+        return redirect('checklist')
 
     # Add new item to the list
     if request.method == "POST":

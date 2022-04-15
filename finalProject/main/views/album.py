@@ -11,16 +11,6 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from finalProject.main.models import Album, Picture
 
 
-# class HomePageView(LoginRequiredMixin, ListView):
-#     model = Album
-#     template_name = 'main/home.html'
-#     context_object_name = 'albums'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['albums'] = context['albums'].filter(author=self.request.user)
-#         return context
-
 @login_required
 def home_page(request):
     albums = Album.objects.filter(author=request.user)
@@ -47,7 +37,6 @@ def home_page(request):
 def album_page(request, pk):
     album_name = Album.objects.get(pk=pk)
     photos = Picture.objects.filter(album__pk=pk)
-    current_user = None
 
     paginator = Paginator(photos, 6)
     page = request.GET.get('page')
@@ -59,11 +48,8 @@ def album_page(request, pk):
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
 
-    if photos:
-        current_user = photos[0].album.author
-
-        if request.user != current_user:
-            return redirect('home page')
+    if request.user != album_name.author:
+        return redirect('home page')
 
     context = {
         'album_name': album_name.title,

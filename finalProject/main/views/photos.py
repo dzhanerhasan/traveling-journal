@@ -1,12 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from django.urls import reverse
+from django.views.generic import CreateView, UpdateView, DeleteView
 
 from finalProject.main.forms import CreatePhotoForm, EditPhotoForm
-from finalProject.main.models import Picture, Album
+from finalProject.main.models import Picture
 
 
 class PhotoCreateView(LoginRequiredMixin, CreateView):
