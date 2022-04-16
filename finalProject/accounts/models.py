@@ -8,6 +8,8 @@ class Profile(models.Model):
     FEMALE = 'Female'
     DO_NOT_SHOW = 'Do not show'
 
+    BIO_MAX_LENGTH = 200
+
     GENDERS = [(x, x) for x in (MALE, FEMALE, DO_NOT_SHOW)]
 
     user = models.OneToOneField(
@@ -24,7 +26,7 @@ class Profile(models.Model):
         null=True,
         blank=True,
         default='No biography yet',
-        max_length=150,
+        max_length= BIO_MAX_LENGTH,
     )
 
     gender = models.CharField(
