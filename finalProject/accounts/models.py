@@ -26,7 +26,7 @@ class Profile(models.Model):
         null=True,
         blank=True,
         default='No biography yet',
-        max_length= BIO_MAX_LENGTH,
+        max_length=BIO_MAX_LENGTH,
     )
 
     gender = models.CharField(
